@@ -37,7 +37,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  dnsName: call-elhay
+  dnsName: call-eladt
   type: LoadBalancer
   port: 80
 
