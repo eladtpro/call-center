@@ -5,7 +5,7 @@ name: call-center
             - main
     workflow_dispatch: {}
 env:
-    ACR_RESOURCE_GROUP: elhays
+    ACR_RESOURCE_GROUP: eladt
     AZURE_CONTAINER_REGISTRY: databasecni
     CHART_OVERRIDE_PATH: ./call-center/values.yaml
     CHART_OVERRIDES: image.repository=databasecni.azurecr.io/call-center,image.tag=${{ github.sha }}
