@@ -52,12 +52,12 @@ spec:
             - mountPath: "/app/userdata/"
               name: {{ include "call-center.fullname" . }}-userdata
           env:
-          - name: KEY_AZURE_ML
-            value: {{ .Values.keyazureml }}
-          - name: KEY_AZURE_AI_DEVINCHI
-            value: {{ .Values.keyazureai }}
-          - name: URL_AZURE_AI_DEVINCHI
-            value: {{ .Values.urlazureai }}
+          - name: AZURE_OPENAI_KEY
+            value: {{ .Values.AZURE_OPENAI_KEY }}
+          - name: AZURE_SPEECH_KEY
+            value: {{ .Values.AZURE_SPEECH_KEY }}
+          - name: AZURE_VISION_KEY
+            value: {{ .Values.AZURE_VISION_KEY }}
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

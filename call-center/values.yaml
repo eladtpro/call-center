@@ -41,11 +41,9 @@ service:
   type: LoadBalancer
   port: 80
 
-keyazureai: 'TBD'
-keyazureml: 'TBD'
-urlazureai: 'TBD'
-
-
+AZURE_OPENAI_KEY: 'TBD'
+AZURE_SPEECH_KEY: 'TBD'
+AZURE_VISION_KEY: 'TBD'
 
 ingress:
   enabled: false
