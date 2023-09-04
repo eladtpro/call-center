@@ -1,7 +1,4 @@
 streamlit
-audio-recorder-streamlit
 azure-cognitiveservices-speech
 openai
 azure-cognitiveservices-vision-computervision
-pillow
-

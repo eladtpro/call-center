@@ -2,6 +2,7 @@ import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
 import os
+import json
 
 import requests
 
@@ -25,7 +26,7 @@ def speech_from_file(data_file, speech_key,lang = "en-US", service_region="weste
 
     # Check the result
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
-        return "Recognized: {}".format(result.text)
+        return "**:blue[Recognized:]** {}".format(result.text)
     elif result.reason == speechsdk.ResultReason.NoMatch:
         return "No speech could be recognized: {}".format(result.no_match_details)
     elif result.reason == speechsdk.ResultReason.Canceled:
@@ -37,75 +38,45 @@ def speech_from_file(data_file, speech_key,lang = "en-US", service_region="weste
 
     return 'result unknown'
 
-def vision_from_file(data_file,vision_key,vision_endpoint):
+def vision_from_file(data_file,vision_key,vision_endpoint, fixed = False):
     # # Images used for the examples: Describe an image, Categorize an image, Tag an image, 
     # # Detect faces, Detect adult or racy content, Detect the color scheme, 
     # # Detect domain-specific content, Detect image types, Detect objects
+    
+    if not fixed:
+        # url = vision_endpoint + "vision/v3.1/analyze"
+        url = vision_endpoint + "vision/v3.1/tag"
+        headers = {'Ocp-Apim-Subscription-Key': vision_key,'Content-Type': 'application/octet-stream'}
+        # params = {'visualFeatures': 'Categories,Description,Color'}
+        with open(data_file, 'rb') as f:
+            data = f.read()
+        response = requests.post(
+            url, headers=headers, data=data)
+        response.raise_for_status()
+        analysis = response.json()
+        result = "**:blue[Tags:]**  \n"
+        for tag in analysis['tags']:
+            result += f"**{tag['name']}** with confidence {float(tag['confidence'])*100:.2f}%  \n"
+            print(tag['name'], tag['confidence'])
+        print(analysis)
+        return result
 
-    # computervision_client = ComputerVisionClient(vision_endpoint, CognitiveServicesCredentials(vision_key))
-    # images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "images")
+
+    computervision_client = ComputerVisionClient(vision_endpoint, CognitiveServicesCredentials(vision_key))
     # remote_image_url = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-sample-data-files/master/ComputerVision/Images/landmark.jpg"
-    # print("===== Tag an image - remote =====")
-    # # Call API with remote image
-    # tags_result_remote = computervision_client.tag_image(remote_image_url )
-
-    # url = vision_endpoint + "vision/v3.1/analyze"
-    url = vision_endpoint + "vision/v3.1/tag"
-    headers = {'Ocp-Apim-Subscription-Key': vision_key,'Content-Type': 'application/octet-stream'}
-    # params = {'visualFeatures': 'Categories,Description,Color'}
-    with open(data_file, 'rb') as f:
-        data = f.read()
-    response = requests.post(
-        url, headers=headers, data=data)
-    response.raise_for_status()
-    analysis = response.json()
-
-    print(analysis)
-
-
-    return analysis
-
-
-
+    remote_image_url = "https://whatconsumer.co.uk/wp-content/uploads/2008/07/broken_laptop_220-150x150.jpg"
+    tags_result_remote = computervision_client.tag_image(remote_image_url )
     # Print results with confidence score
     print("Tags in the remote image: ")
     if (len(tags_result_remote.tags) == 0):
-        print("No tags detected.")
+        return "No tags detected."
     else:
+        # my_dict = {index: element for index, element in enumerate(tags_result_remote.tags)}
+        # return json.dumps(my_dict, default=lambda o: o.__dict__, 
+        #     sort_keys=True, indent=4)
+        data = {}
         for tag in tags_result_remote.tags:
-            print("'{}' with confidence {:.2f}%".format(tag.name, tag.confidence * 100))
-    print()
-    '''
-    END - Tag an Image - remote
-    '''
-    print("End of Computer Vision quickstart.")
+            data[tag.name] = tag.confidence
+            # print("'{}' with confidence {:.2f}%".format(tag.name, tag.confidence * 100))
+        return json.dumps(data)
 
-    # </SpeechRecognitionWithFile>
-
-
-# def from_file(data_file,lang,endpoint_speech,speech_key):
-#     speech_config = speechsdk.SpeechConfig(subscription=speech_key,
-#                                            endpoint= endpoint_speech,
-#                                            speech_recognition_language=lang
-#                                            )
-#     audio_input = speechsdk.AudioConfig(filename=data_file)
-#     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config,
-#                                                    audio_config=audio_input,
-#                                                    language=lang
-#     )
-
-#     # result = speech_recognizer.recognize_once_async().get()
-#     result = speech_recognizer.recognize_once()
-    
-#     # Checks result.
-#     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
-#         print("Recognized: {}".format(result.text))
-#     elif result.reason == speechsdk.ResultReason.NoMatch:
-#         print("No speech could be recognized: {}".format(result.no_match_details))
-#     elif result.reason == speechsdk.ResultReason.Canceled:
-#         cancellation_details = result.cancellation_details
-#         print("Speech Recognition canceled: {}".format(cancellation_details.reason))
-#         if cancellation_details.reason == speechsdk.CancellationReason.Error:
-#             print("Error details: {}".format(cancellation_details.error_details))
-    
-#     return(result.text)
