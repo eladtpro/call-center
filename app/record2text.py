@@ -1,10 +1,20 @@
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
-import os
+from pydub import AudioSegment
 import json
+import io
 
 import requests
+
+#Convert the mp3 content into wav
+def  convert_mp3_to_wav(mp3_data):
+    audio = AudioSegment.from_mp3(io.BytesIO(mp3_data))
+    audio = audio.set_frame_rate(16000)
+    wav_data = io.BytesIO()
+    audio.export(wav_data, format="wav")
+    wav_data.seek(0)
+    return  wav_data
 
 # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-started-speech-to-text?tabs=windows%2Cterminal&pivots=programming-language-python
 def speech_from_file(data_file, speech_key,lang = "en-US", service_region="westeurope"):
