@@ -41,9 +41,12 @@ service:
   type: LoadBalancer
   port: 80
 
-AZURE_OPENAI_KEY: 'TBD'
-AZURE_SPEECH_KEY: 'TBD'
-AZURE_VISION_KEY: 'TBD'
+azureopenaikey: 'Automated Deployment'
+# AZURE_OPENAI_KEY: 'TBD'
+azurespeechkey: 'Automated Deployment'
+# AZURE_SPEECH_KEY: 'TBD'
+azurevisionkey: 'Automated Deployment'
+# AZURE_VISION_KEY: 'TBD'
 
 ingress:
   enabled: false

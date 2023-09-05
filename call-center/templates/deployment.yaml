@@ -53,11 +53,11 @@ spec:
               name: {{ include "call-center.fullname" . }}-userdata
           env:
           - name: AZURE_OPENAI_KEY
-            value: {{ .Values.AZURE_OPENAI_KEY }}
+            value: {{ .Values.azureopenaikey }}
           - name: AZURE_SPEECH_KEY
-            value: {{ .Values.AZURE_SPEECH_KEY }}
+            value: {{ .Values.azurespeechkey }}
           - name: AZURE_VISION_KEY
-            value: {{ .Values.AZURE_VISION_KEY }}
+            value: {{ .Values.azurevisionkey }}
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
